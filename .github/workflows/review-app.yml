@@ -1,0 +1,51 @@
+name: Review App Workflow
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  pull_request_review:
+    types:
+      - submitted
+
+jobs:
+  create_or_delete_review_app:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5
+        with:
+          ssh-private-key: ${{ secrets.DOKKU_SSH_KEY }}
+
+      - name: Determine PR number
+        id: pr_number
+        run: echo "::set-output name=number::${{ github.event.pull_request.number }}"
+
+      - name: Determine PR branch
+        id: pr_branch
+        run: echo "::set-output name=branch::${{ github.event.pull_request.head.ref }}"
+
+      - name: Create or delete review app
+        env:
+          DOKKU_HOST: "your-dokku-server.com"
+        run: |
+          PR_NUMBER="${{ steps.pr_number.outputs.number }}"
+          PR_BRANCH="${{ steps.pr_branch.outputs.branch }}"
+          REVIEW_APP_NAME="pr-${PR_NUMBER}-branch-${PR_BRANCH}"
+
+          # Check if the review app already exists and delete it
+          if ssh -o "StrictHostKeyChecking=no" dokku@${DOKKU_HOST} apps:exists "$REVIEW_APP_NAME"; then
+            ssh -o "StrictHostKeyChecking=no" dokku@${DOKKU_HOST} apps:destroy "$REVIEW_APP_NAME"
+          fi
+
+          # Create a new review app
+          ssh -o "StrictHostKeyChecking=no" dokku@${DOKKU_HOST} apps:create "$REVIEW_APP_NAME"
+          git remote add "$REVIEW_APP_NAME" "dokku@${DOKKU_HOST}:${REVIEW_APP_NAME}"
+          git push "$REVIEW_APP_NAME" "$PR_BRANCH:master" # Adjust branch names if needed
+
+          echo "Review app URL: http://${REVIEW_APP_NAME}.${DOKKU_HOST}/"
