@@ -20,15 +20,17 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           script: |
-            dokku apps:list
+            PR_NUMBER = ${{ github.event.pull_request.number }}
+            PR_BRANCH = ${{ github.event.pull_request.head.ref }}
+            echo $PR_NUMBER
 
       # - name: Determine PR number
       #   id: pr_number number per
-      #   run: echo "::set-output name=number::${{ github.event.pull_request.number }}"
+      #   run: echo "::set-output name=number::"
 
       # - name: Determine PR branch
       #   id: pr_branch
-      #   run: echo "::set-output name=branch::${{ github.event.pull_request.head.ref }}"
+      #   run: echo "::set-output name=branch::"
 
       # - name: Create or delete review app
       #   env:
