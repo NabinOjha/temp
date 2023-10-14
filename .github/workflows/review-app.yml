@@ -22,7 +22,7 @@ jobs:
           script: whoami
 
       # - name: Determine PR number
-      #   id: pr_number
+      #   id: pr_number number
       #   run: echo "::set-output name=number::${{ github.event.pull_request.number }}"
 
       # - name: Determine PR branch
