@@ -11,19 +11,21 @@ on:
 jobs:
   create_or_delete_review_app:
     runs-on: ubuntu-latest
-
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set PR Environment Variables
+        run: |
+          echo "PR_BRANCH=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
       - name: Login to the server
-        uses: appleboy/ssh-action@v1.0.0
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        uses: appleboy/ssh-action@v1.0.
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           script: |
-            echo "$PR NUMBER $PR_BRANCH"
+            echo "$PR_BRANCH"
 
       # - name: Determine PR number
       #   id: pr_number number per
