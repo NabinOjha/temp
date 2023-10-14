@@ -25,7 +25,11 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           script: |
-            echo "$PR_BRANCH"
+            PR_BRANCH=${{ github.event.pull_request.head.ref }}
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            
+            echo "PR branch: $PR_BRANCH"
+            echo "PR number: $PR_NUMBER"
 
       # - name: Determine PR number
       #   id: pr_number number per
