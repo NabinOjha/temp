@@ -19,7 +19,9 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
-          script: whoami
+
+      - name: List all the apps
+        run: dokku apps:list
 
       # - name: Determine PR number
       #   id: pr_number number per
