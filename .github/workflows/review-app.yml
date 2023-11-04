@@ -11,7 +11,7 @@
           uses: dokku/github-action@master
           with:
             command: review-apps:destroy
-            git_remote_url: 'ssh://dokku@dokku.me:22/dokkuapp'
+            git_remote_url: 'ssh://dokku@${{ secrets.HOST }}:22/dokkuapp'
             review_app_name: review-dokkuapp-${{ github.event.pull_request.number }}
             ssh_private_key: ${{ secrets.KEY }}
             
@@ -27,6 +27,6 @@
           uses: dokku/github-action@master
           with:
             command: review-apps:create
-            git_remote_url: 'ssh://dokku@dokku.me:22/dokkuapp'
+            git_remote_url: 'ssh://dokku@${{ secrets.HOST }}:22/dokkuapp'
             review_app_name: review-dokkuapp-${{ github.event.pull_request.number }}
-            ssh_private_key: ${{ secrets.KEY }}
+            ssh_private_SSH-SECRET-KEY: ${{ secrets.KEY }}
