@@ -2,10 +2,22 @@
   on:
     pull_request
   
-  jobs:
-    review_app:
+  jobs:      
+    destroy_review_app:
       runs-on: ubuntu-latest
-      if: github.event_name == 'pull_request' && github.event.action == 'opened'
+      if: github.event_name == 'pull_request' && (github.event.action == 'closed' || github.event.action == 'synchronized')
+      steps:
+        - name: Destroy the review app
+          uses: dokku/github-action@master
+          with:
+            command: review-apps:destroy
+            git_remote_url: 'ssh://dokku@dokku.me:22/dokkuapp'
+            review_app_name: review-dokkuapp-${{ github.event.pull_request.number }}
+            ssh_private_key: ${{ secrets.KEY }}
+            
+    create_review_app:
+      runs-on: ubuntu-latest
+      if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronized')
       steps:
         - name: Cloning repo
           uses: actions/checkout@v4
@@ -15,18 +27,6 @@
           uses: dokku/github-action@master
           with:
             command: review-apps:create
-            git_remote_url: 'ssh://dokku@dokku.me:22/appname'
-            review_app_name: review-appname-${{ github.event.pull_request.number }}
-            ssh_private_key: ${{ secrets.KEY }}
-  
-    destroy_review_app:
-      runs-on: ubuntu-latest
-      if: github.event_name == 'pull_request' && github.event.action == 'closed'
-      steps:
-        - name: Destroy the review app
-          uses: dokku/github-action@master
-          with:
-            command: review-apps:destroy
-            git_remote_url: 'ssh://dokku@dokku.me:22/appname'
-            review_app_name: review-appname-${{ github.event.pull_request.number }}
+            git_remote_url: 'ssh://dokku@dokku.me:22/dokkuapp'
+            review_app_name: review-dokkuapp-${{ github.event.pull_request.number }}
             ssh_private_key: ${{ secrets.KEY }}
