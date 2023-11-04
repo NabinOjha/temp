@@ -12,7 +12,7 @@
           with:
             command: review-apps:destroy
             git_remote_url: 'ssh://dokku@${{ secrets.HOST }}:22/dokkuapp'
-            review_app_name: review-dokkuapp-${{ github.event.pull_request.number }}
+            review_app_name: dokkuapp-${{ github.event.pull_request.number }}
             ssh_private_key: ${{ secrets.KEY }}
             
     create_review_app:
@@ -28,5 +28,5 @@
           with:
             command: review-apps:create
             git_remote_url: 'ssh://dokku@${{ secrets.HOST }}:22/dokkuapp'
-            review_app_name: review-dokkuapp-${{ github.event.pull_request.number }}
+            review_app_name: dokkuapp-${{ github.event.pull_request.number }}
             ssh_private_key: ${{ secrets.KEY }}
